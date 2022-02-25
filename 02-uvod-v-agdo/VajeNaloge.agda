@@ -40,7 +40,8 @@ par = record { fst = O; snd = (𝕥 , 𝕗) }
 -- Destrukcija
 swap : {A B : Set} → Pair A B → Pair B A
 -- Prek vzorca ali s funkcijo
-swap p@(_ , s) = (s , Pair.fst p )
+-- swap p@(_ , s) = (s , Pair.fst p )
+swap x@(fst , snd) = snd , Pair.fst x
 
 -- Najprej ponovimo osnovno programiranje s seznami
 
@@ -55,27 +56,41 @@ module List where
         _∷_ : A → List A → List A
 
     l1 : List ℕ
-    l1 = {!   !}
+    l1 = []
 
     l2 : List ℕ
-    l2 = {!   !}
+    l2 = O ∷ []
 
     l3 : List ℕ
-    l3 = {!   !}
+    l3 = S (O) ∷ l2
 
     -- Definirajte nekaj osnovnih operacij na seznamih
     -- V pomoč naj vam bodo testi na koncu funkcij
-    _++_ : {!   !}
-    _++_ = {!   !}
+    _++_ : {A : Set} → List A → List A → List A
+    [] ++ b = b
+    x ∷ a ++ b = x ∷ (a ++ b)
 
-    len : {!   !}
-    len = {!   !}
+    len : {A : Set} → List A → ℕ
+    len [] = O
+    len (x ∷ xs) = S (len xs)
 
-    reverse : {!   !}
-    reverse = {!   !}
+    reverse : {A : Set} → List A → List A
+    reverse xs = reverse-aux [] xs 
+      where
+        reverse-aux : {A : Set} → List A → List A → List A
+        reverse-aux acc [] = acc
+        reverse-aux acc (x ∷ xs) = reverse-aux (x ∷ acc) xs
+    {- 2. nacin: tuki je A isti 
+    reverse {A} xs = reverse-aux [] xs 
+      where
+        reverse-aux : List A → List A → List A
+        reverse-aux acc [] = acc
+        reverse-aux acc (x ∷ xs) = reverse-aux (x ∷ acc) xs
+    -}
 
-    map : {!   !}
-    map = {!   !}
+    map : {A B : Set} → List A → (A → B) → List B
+    map [] f = []
+    map (x ∷ xs) f = (f x) ∷ (map xs f)
 
     -- Ko potrebujemo dodatno informacijo si pomagamo z with
 
@@ -85,8 +100,10 @@ module List where
     ... | 𝕗 = filter f l
     ... | 𝕥 = x ∷ (filter f l)
 
-    _[_] : {!   !}
-    _[_] = {!   !}
+    _[_] : {A : Set} → List A → ℕ → Maybe A
+    [] [ i ] = nothing
+    x ∷ xs [ O ] = just x
+    x ∷ xs [ S i ] = xs [ i ]
 
 -- Odvisni tipi
 
@@ -110,39 +127,48 @@ module Vector where
     -- Za določene tipe vektorjev lahko vedno dobimo glavo in rep
 
     head : {A : Set} → {n : ℕ} → Vector A (S n) → A
-    head = {!   !}
+    head (x ∷ xs) = x
 
-    tail : {!   !}
-    tail = {!   !}
+    tail : {A : Set} → {n : ℕ} → Vector A (S n) → Vector A n
+    tail (x ∷ xs) = xs
 
-    map : {!   !}
+    map : {A B : Set} → {n : ℕ} → (A → B) → Vector A n → Vector B n
     map = {!   !}
 
     -- Sedaj lahko napišemo bolj informativni obliki funkcij `zip` in `unzip`
 
     zip : {A B : Set} → {n : ℕ} → Vector A n → Vector B n → Vector (Pair A B) n
-    zip = {!   !}
+    zip [] [] = []
+    zip (x ∷ xs) (y ∷ ys) = x , y ∷ zip xs ys
 
-    unzip : {!   !}
-    unzip = {!   !}
+    unzip : {A B : Set} → {n : ℕ} → Vector (Pair A B) n → Pair (Vector A n) (Vector B n)
+    unzip [] = [] , []
+    unzip ((fst , snd) ∷ xs) with unzip xs
+    ... | f , s = (fst ∷ f) , (snd ∷ s) 
 
     -- S pomočjo tipa `Fin` je indeksiranje varno
     -- Namig: Naj vam agda pomaga pri vzorcih (hkrati lahko razbijemo več vzorcev nanekrat)
     _[_] : {A : Set} {n : ℕ} -> Vector A n -> Fin n -> A
-    _[_] = {!   !}
+    [] [ () ]
+    x ∷ v [ Fo ] = x
+    x ∷ v [ Fs i ] = v [ i ]
 
     -- Dobro preučite tip in povejte kaj pomeni
     fromℕ : (n : ℕ) → Fin (S n)
-    fromℕ = {!   !}
+    fromℕ O = Fo
+    fromℕ (S n) = Fs (fromℕ n)
 
-    toℕ : {!   !}
-    toℕ = {!   !}
+    toℕ : {n : ℕ} → Fin n →  ℕ
+    toℕ Fo = O
+    toℕ (Fs x) = S (toℕ x)
     
     init : {A : Set} → (n : ℕ) → (x : A) -> Vector A n
-    init = {!   !}
+    init O x = []
+    init (S n) x = x ∷ init n x
     
-    vecToList : {!   !}
-    vecToList = {!   !}
+    vecToList : {A : Set} → {n : ℕ} → Vector A n → List.List A
+    vecToList [] = List.[]
+    vecToList (x ∷ v) = x List.∷ vecToList v
 
     -- V tipih lahko nastopaju tudi povsem običajne funkcije
 
