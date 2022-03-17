@@ -33,10 +33,6 @@ Katere elemente vsebuje $\mathbb{N}$?
 
 Na vsakem koraku dobimo novo naravno število in obratno, vsak element $\mathbb{N}$ dobimo tako, da končno mnogokrat uporabimo eno od zgoraj naštetih pravil (čeprav resda prav veliko izbire nimamo).
 
-Seveda $\mathbb{N}$ ni edina množica, ki zadošča zgornjima dvema praviloma. Taka množica je na primer tudi $\mathbb{Z}$, vendar hitro vidimo, da sledi $\mathbb{N} \subseteq \mathbb{Z}$, saj je $\mathbb{N}$ najmanjša taka množica. Res, če $\mathbb{Z}$ zadošča zgornjima dvema praviloma, po enakem postopku kot zgoraj vidimo, da mora vsebovati najprej $0$, potem $0^+ = 1$, potem $1^+ = 2$ in tako naprej za vsa števila $n \in \mathbb{N}$.
-
-Vsaka množica, ki zadošča zgornjima dvema praviloma, bo vsebovala vsa naravna števila $n \in \mathbb{N}$. To lastnost lahko uporabimo za _dokazovanje z indukcijo_. Naj bo $P$ predikat na naravnih številih, za katerega velja $P(0)$ ter $\forall n \in \mathbb{N}. P(n) \Rightarrow P(n^+)$. Tedaj sledi, da množica $\{ n \in \mathbb{N} | P(n) \}$ zadošča obema praviloma in posledično vsebuje celoten $\mathbb{N}$, zato $P(n)$ velja za vsak $n \in \mathbb{N}$.
-
 ### Aritmetični izrazi
 
 Podobno lahko mnnožico aritmetičnih izrazov $\mathbb{E}$, ki smo jo definirali že z BNF sintakso
@@ -65,10 +61,10 @@ Opazimo, da smo pri prvem pravilu $n \in \mathbb{N}$ zapisali kot stranski pogoj
 Tudi tu vse elemente $\mathbb{E}$ dobimo tako, da končno mnogokrat uporabljamo pravila.
 
 1. Najprej vidimo, da $\mathbb{E}$ vsebuje vsa števila $\dots, -2, -1, 0, 1, 2, \dots$.
-2. Sedaj iz preostalih treh pravil sledi, da mora $\mathbb{E}$ tega mora vsebovati tudi vse njihove vsote $(0 + 0), (0 + 1), (1 + 0), (-2 + 3), \dots$, njihove produkte $(0 * 0), (0 * 1), (1 * 0), (-2 * 3), \dots$ ter njihove negacije $-0, -1, -(-42), \dots$
-3. Nato vidimo, da mora $\mathbb{E}$ vsebovati tudi vse kombinacije elementov, ki smo jih obili v prejšnjih korakih, na primer $(-2 + 3) * (0 * 1)$ ali $-(-42) + (6 * 7)$.
+2. Sedaj iz preostalih treh pravil sledi, da mora $\mathbb{E}$ tega mora vsebovati tudi vse njihove vsote $(0 + 0), (0 + 1), (1 + 0), (-2 + 3), \dots$, njihove produkte $(0 \ast 0), (0 \ast 1), (1 \ast 0), (-2 \ast 3), \dots$ ter njihove negacije $-0, -1, -(-42), \dots$
+3. Nato vidimo, da mora $\mathbb{E}$ vsebovati tudi vse kombinacije elementov, ki smo jih obili v prejšnjih korakih, na primer $(-2 + 3) \ast (0 \ast 1)$ ali $-(-42) + (6 \ast 7)$.
 
-Če postopek nadaljujemo, dobimo vse elemente množice $\mathbb{E}$, vsakega v končno mnogo korakih. Vsakemu elementu $e \in \mathbb{E}$ pripada tudi natanko določeno _drevo izpeljave_, iz katerega se vidi, kako smo prišli do dejstva, da $\mathbb{E}$ vsebuje $e$. V tem drevesu je $e$ koren, pravila so vozlišča, aksiomi pa listi. Na primer, elementu $42 + (6 * 7)$ pripada drevo
+Če postopek nadaljujemo, dobimo vse elemente množice $\mathbb{E}$, vsakega v končno mnogo korakih. Vsakemu elementu $e \in \mathbb{E}$ pripada tudi natanko določeno _drevo izpeljave_, iz katerega se vidi, kako smo prišli do dejstva, da $\mathbb{E}$ vsebuje $e$. V tem drevesu je $e$ koren, pravila so vozlišča, aksiomi pa listi. Na primer, elementu $42 + (6 \ast 7)$ pripada drevo
 $$
   \frac
     {
@@ -78,102 +74,111 @@ $$
       \quad
       \frac
         {\frac{}{6 \in \mathbb{E}} \quad \frac{}{7 \in \mathbb{E}}}
-      {6 * 7 \in \mathbb{E}}
+      {6 \ast 7 \in \mathbb{E}}
     }
-    {42 + (6 * 7) \in \mathbb{E}}
+    {42 + (6 \ast 7) \in \mathbb{E}}
 $$
 Vidimo, da na $n$-tem koraku dobimo ravno tiste elemente z drevesom izpeljave višine $n$.
 
-Obstoj množic $\mathbb{N}$ in $\mathbb{E}$ ter tudi bolj splošnih množic, narejenih po podobnem kopitu, sledi iz aksiomov teorije množic, vendar tega ne bomo dokazali.
+### Induktivno podane relacije
 
-## Induktivne podmnožice
+Pri teoriji programskih jezikov bomo pogosto uporabljali induktivno podane relacije, s katerimi bomo na primer definirali, kdaj se en izraz evalvira v drugega ali pa kdaj ima dani izraz veljaven tip. V preostanku tega razdelka pa si bomo izbrali bolj enostaven primer in sicer soda naravna števila.
 
-Raje se bomo osredotočili na induktivne _podmnožice_, ki jih enostavno natančno definiramo, hkrati pa jih bomo pri teoriji programskih jezikov intenzivno uporabljali. Najpogosteje se bomo posluževali induktivno podanih relacij kot sta evaluacija ali pravilnost izrazov v jeziku IMP. V preostanku tega razdelka pa si bomo izbrali bolj enostaven primer. Množico sodih naravnih števil lahko podamo kot najmanjšo podmnožico $S \subseteq \mathbb{N}$, zaprto za pravili
+Ker so relacije definirane kot podmnožice domene, bi lahko induktivno podane relacije podali kot najmanjše podmnožice, zaprte za dana pravila. Tako bi množico sodih naravnih števil definirali kot najmanjšo podmnožico $S \subseteq \mathbb{N}$, zaprto za pravili:
 $$
   \frac{}{0 \in S}
   \quad
   \frac{n \in S}{n + 2 \in S}
 $$
-Kaj vse vsebuje $S$?
+Da pa bomo vse spravili pod eno samo definicijo, hkrati pa še bolj zvesto sledili pristopu, ki ga uporablja Agda, bomo raje definirali družino množic $\mathsf{sodo}_n$, ki bodo predstavljale dokaze, da je $n$ sodo število. Množica $\mathsf{sodo}_n$ bo torej neprazna, kadar bo $n$ sodo, in prazna, kadar bo $n$ liho. Zgornji pravili bi tako lahko napisali kot:
+$$
+  \frac{}{\mathsf{nicJeSodo} \in \mathsf{sodo}_0}
+  \quad
+  \frac{p \in \mathsf{sodo}_n}{\mathsf{sodoPlusDvaJeSodo} \, p \in \mathsf{sodo}_{n + 2}}
+$$
+Za množice $\mathsf{sodo}_n$ imamo torej dva konstruktorja. Konstanto $\mathsf{nicJeSodo}$ ter konstruktor $\mathsf{sodoPlusDvaJeSodo}$, ki dokaže, da je $n + 2$ sodo, kadar obstaja dokaz $p$, da je $n$ sodo. Preverimo lahko, da je množica $\mathsf{sodo}_n$ neprazna natanko tedaj, kadar je $n \in S$.
 
-1. Najprej vidimo, da je $0 \in S$.
+Pri relacijah bomo pravila za konstrukcijo množic pisali malo drugače, da bomo bolj poudarili njihovo vsebino:
+$$
+\def\sc#1{\small\dosc#1\csod} \def\dosc#1#2\csod{{\rm #1{\scriptsize #2}}}
+  \frac{}{0 \, \mathsf{sodo}} \sc{NIC}\sc{JE}\sc{SODO}
+  \quad
+  \frac{n \, \mathsf{sodo}}{n + 2 \, \mathsf{sodo}} \sc{SODO}\sc{PLUS}\sc{DVA}\sc{JE}\sc{SODO}
+$$
+Če nas imena pravil (torej konstruktorjev) ne bodo zanimala, jih bomo izpustili.
 
-### Množica pravil $R$
+## Konstrukcija induktivnih množic
 
-Da se izognemo natančni definiciji, kaj vse nam lahko podaja pravila, bomo na njih raje gledali kot na množico $R$ parov $(H, c)$ kjer bo $H \subseteq X$ _končna_ množica predpostavk, $c$ pa zaključek.  "Ulomke", kot smo jih pisali doslej, bomo uporabljali še naprej, vendar nam bodo le služili kot krajši zapis množice $R \subseteq \mathcal{P}_f(X) \times X$. Na primer, pravila, ki podajajo množico sodih števil, bi podali z množico
-$$
-  \Big\{
-    \big(\emptyset, 0\big),
-    \big(\{0\}, 2\big),
-    \big(\{1\}, 3\big),
-    \big(\{2\}, 4\big),
-    \dots
-  \Big\}
-$$
-Opazimo, da zaprtje za pravilo
-$$
-  \frac{n \in S}{n + 2 \in S}
-$$
-pomeni tudi, da iz $1 \in S$ sledi $3 \in S$.
+### Predstavitev množice pravil s preslikavo
 
-Množica $A \subseteq X$ _je zaprta za pravila $R$_, če velja
-$$
-  \forall (H, c) \in R. H \subseteq A \Rightarrow c \in A.
-$$
-Torej, če $A$ vsebuje vse predpostavke $H$, mora vsebovati tudi zaključek $c$.
+Induktivne množice bomo gradili po korakih: v prvem koraku bomo dodali vse elemente, ki sledijo iz aksiomov, nato tiste, ki imajo drevesa izpeljave z globino 1, tiste z globino 2 in tako naprej. Pri tem bomo vsako množico pravil predstavili s preslikavo $F$, ki množico $X$ slika v množico $F X$, sestavljeno iz vseh zaključkov pravil, katerih predpostavke so vsebovane v $X$. Množica $X$ bo torej zaprta za pravila natanko tedaj, kadar bo $F X \subseteq X$. "Ulomke", kot smo jih pisali doslej, bomo uporabljali še naprej, vendar nam bodo le služili kot krajši zapis preslikave $F$.
 
-### Konstrukcija najmanjše množice $I_R$
+Za primer si oglejmo množico naravnih števil. Spomnimo se na pravili:
+$$
+  \frac{}{0 \in \mathbb{N}}
+  \quad
+  \frac{n \in \mathbb{N}}{n^+ \in \mathbb{N}}
+$$
+Ker so naravna števila dveh različnih oblik (nič oz. naslednik), bomo v konstrukciji množice $F X$ nastopala disjunktna vsota. Ničla nima nobenega dodatnega argumenta, zato jo bomo predstavili z $\iota_1(\ast)$, kjer je $\ast$ edini element singletona $1$. Naslednik pa ima en argument, ki mora priti iz množice predpostavk, zato ga bomo predstavili z $\iota_2(x)$, kjer je $x \in X$. Zato bomo množico pravil za naravna števila predstavili s preslikavo $F X = 1 + X$. Število $2$ bi predstavljal element $\iota_2(\iota_2(\iota_1(\ast))$
 
-Pokažimo, da v $X$ obstaja najmanjša podmnožica, zaprta za pravila $R$. Definirajmo operator $F_R : \mathcal{P}(X) \to \mathcal{P}(X)$, ki podmnožico $A \subseteq X$ slika v
+V splošnem vsakemu pravilu ustreza en sumand v disjunktni vsoti, sestavljen iz množic, ki ustrezajo predpostavkam pravil. Recimo, pravilom za aritmetične izraze
 $$
-  F_R(A) = \{ c \in X | \exists (H, c) \in R. H \subseteq A \}
+  \frac{}{n \in \mathbb{E}}(n \in \mathbb{N})
+  \quad
+  \frac{e_1 \in \mathbb{E}\quad e_2 \in \mathbb{E}}{e_1 + e_2 \in \mathbb{E}}
+  \quad
+  \frac{e_1 \in \mathbb{E}\quad e_2 \in \mathbb{E}}{e_1 * e_2 \in \mathbb{E}}
+  \quad
+  \frac{e \in \mathbb{E}}{-e \in \mathbb{E}}
 $$
-Operator $F_R$ torej $A$ slika v množico vseh tistih zaključkov $c$, za katere so vse hipoteze $H$ v $A$. Opazimo, da je $A$ zaprta za pravila $R$ natanko tedaj, kadar velja $F_R(A) \subseteq A$. 
-
-Hitro vidimo, da je $F_R$ monoton: če velja $A_1 \subseteq A_2$, velja tudi $F_R(A_1) \subseteq F_R(A_2)$. Definirajmo $I_0 = \emptyset$ ter $I_{n + 1} = F_R(I_n)$.
-
-Za vajo lahko preverimo, da je v zgornjem primeru sodih števil dobimo $I_0 = \emptyset$, $I_1 = \{ 0 \}$, $I_2 = \{ 0, 2 \}$, $I_3 = \{ 0, 2, 4 \}$, … V splošnem so v $I_n$ vsi elementi, ki jih dobimo z največ $n$ ponovitvami uporabe pravil oziroma drevesi izpeljave višine največ $n$.
-
-Ker je $I_0 = \emptyset \subseteq I_1$, iz monotonosti sledi
+ustreza preslikava
 $$
-  I_1 = F_R(I_0) \subseteq F_R(I_1) = I_2
-$$
-in podobno naprej, zato dobimo naraščajočo verigo
-$$
-  I_0 \subseteq I_1 \subseteq I_2 \subseteq I_3 \subseteq \cdots
-$$
-Množico $I_R$ definiramo kot supremum te verige, torej
-$$
-  I_R = \bigcup_{n = 0}^{\infty} I_n
+  F X = \mathbb{N} + (X \times X) + (X \times X) + X
 $$
 
-### Trditev: $I_R$ je zaprta za pravila $R$
+### Konstrukcija induktivnih množic
 
-Vzemimo poljuben $(H, c) \in R$, da velja $H \subseteq I_R$. Ker je $H$ končna, je oblike $\{ h_1, h_2, \dots, h_k \}$, pri čemer je $h_i \in I_R$. Ker je $I_R = \bigcup_{n = 0}^{\infty} I_n$, mora za vsak $i$ obstajati nek $n_i$, da velja $h_i \in I_{n_i}$. Ker imamo naraščajočo verigo, za vse $i$ velja $h_i \in I_m$, kjer je $m = \max(n_1, \dots, n_k)$. Tedaj pa je
-$$
-  c \in F_R(I_m) = I_{m + 1} \subseteq \bigcup_{n = 0}^{\infty} I_n = I_R
-$$
-kar smo želeli pokazati.
+Predpostavimo, da je preslikava $F$:
 
-### Trditev: $I_R$ je najmanjša množica, zaprta za pravila $R$
+* monotona, torej da iz $X \subseteq Y$ velja $F X \subseteq F Y$, in
+* definirana z vrednostmi na končnih podmnožicah, torej da je $F X = \bigcup_{A \subseteq^{\text{končna}} X} F A$
 
-Vzemimo poljubno množico $A$, zaprto za pravila $R$ in pokažimo, da velja $I_R \subseteq A$. Ker velja $I_0 = \emptyset \subseteq A$ in je $F_R$ monoton, velja tudi
+Naj bo $A$ poljubna množica ter naj bosta $F$ in $G$ preslikavi, ki zadoščata zgornjima dvema pogojema. Tedaj zgornjima dvema pogojema zadoščajo tudi preslikave
+
+* $X \mapsto A$,
+* $X \mapsto F X + G X$ in
+* $X \mapsto F X \times G X$
+
+ter s tem tudi preslikavi, s katerima smo definirali naravna števila in aritmetične izraze. Primer preslikave, ki ne zadošča drugemu pogoju je potenciranje $X \mapsto \mathcal{P} X$.
+
+Definirajmo zaporedje
 $$
-  I_1 = F_R(I_0) \subseteq F_R(A) \subseteq A
+  I_0 = \emptyset \qquad I_{n + 1} = F I_n
 $$
-Po enakem postopku za vsak $n$ dobimo $I_n \subseteq A$, torej velja tudi
+ter pokažimo, da je $I = \bigcup_{n = 0}^{\infty} I_n$ najmanjša množica, zaprta za $F$. Preverimo lahko, da $I_n$ vsebuje natanko tiste elemente, katerih drevo izpeljave ima globino kvečjemu $n$.
+
+Pokažimo najprej, da je $F I \subseteq I$. Ker je $F$ definirana z vrednostmi na končnih podmnožicah, velja
 $$
-  I_R = \bigcup_{n = 0}^{\infty} I_n \subseteq A
+  F I = \bigcup_{A \subseteq^{\text{končna}} I} F A
 $$
+Ker je $I = \bigcup_{n = 0}^{\infty} I_n$, za vsako končno $A \subseteq I$ obstaja tak $n$, da je $A \subseteq I_n$. Ker je $F$ monotona, je $F A \subseteq F I_n = I_{n + 1} \subseteq I$. Torej je tudi $\bigcup_{A \subseteq^{\text{končna}} I} F A \subseteq I$.
+
+Vzemimo še množico $X$, da velja $F X \subseteq X$ ter pokažimo, da je $I \subseteq X$. Z indukcijo najprej pokažimo, da je $I_n \subseteq X$. Ker je $I_0 = \emptyset \subseteq X$, je osnovni korak trivialen. Sedaj predpostavimo, da velja $I_n \subseteq X$. Tedaj velja tudi $I_{n + 1} = F I_n \subseteq F X \subseteq X$, saj je preslikava $F$ monotona. Ker so vsi členi $I_n \subseteq X$, velja tudi $I = \bigcup_{n = 0}^{\infty} I_n \subseteq X$.
 
 ### Dokazovanje z indukcijo
 
-Na vsaki induktivno podani podmnožici lahko uporabimo dokaz z indukcijo. Naj bo $P$ predikat na $X$ in naj za vsa pravila
+To lastnost lahko uporabimo za _dokazovanje z indukcijo_. Vsak predikat $P$ na $I$ lahko predstavimo z množico $Q = \{ x \in I \mid P(x) \}$. Če velja $F Q \subseteq Q$, mora biti $Q = I$, saj je $I$ najmanjša množica, zaprta za $F$. Na primer, za $F X = 1 + X$ in $I = \mathbb{N}$ se trditev $F Q \subseteq Q$ prevede na $1 + Q \subseteq Q$. To pomeni, da mora veljati $\iota_1(\ast) \in Q$ ter $\iota_2(n) \in Q$ za vsak $n \in Q$. Prvi pogoj nam pove, da je $0 \in Q$, drugi pogoj pa, da iz $n \in Q$ sledi $n^+ \in Q$, kar je skupaj ravno običajno načelo indukcije
+
 $$
-  \frac{h_1 \quad h_2 \quad \cdots \quad h_n}{c},
+  P(0) \land (\forall n \in \mathbb{N}. P(n) \Rightarrow P(n^+)) \implies \forall m \in \mathbb{N}. P(m)
 $$
-velja
-$$
-  P(h_1) \land P(h_2) \land \cdots \land P(h_n) \Rightarrow P(c).
-$$
-Tedaj je množica $\{ x \in X | P(x)\}$ zaprta za pravila $R$, zato vsebuje množico $I_R$, torej velja $\forall x \in I_R. P(x)$.
+
+Za aritmetične izraze in $F X = \mathbb{N} + (X \times X) + (X \times X) + X$ podobno dobimo načelo indukcije
+
+$$\begin{aligned}
+  &(\forall n \in \mathbb{N} . P(n)) \\
+  &\land (\forall e_1, e_2 \in \mathbb{E}. P(e_1) \land P(e_2) \Rightarrow P(e_1 + e_2)) \\
+  &\land (\forall e_1, e_2 \in \mathbb{E}. P(e_1) \land P(e_2) \Rightarrow P(e_1 \ast e_2)) \\
+  &\land (\forall e \in \mathbb{E}. P(e) \Rightarrow P(-e)) \\
+  &\implies \forall e \in \mathbb{E}. P(e)
+\end{aligned}$$

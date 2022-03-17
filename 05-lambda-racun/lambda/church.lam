@@ -1,0 +1,13 @@
+LET zero =
+    FUN f -> FUN x -> x
+IN
+LET succ =
+    FUN n -> FUN f -> FUN x -> n f (f x)
+IN
+LET plus =
+    FUN m -> FUN n -> FUN f -> FUN x -> m f (n f x)
+IN
+LET times =
+    FUN m -> FUN n -> FUN f -> FUN x -> m (n f) x
+IN
+times (succ zero) (succ zero)

@@ -1,5 +1,7 @@
 module naravna where
 
+open import boole
+
 -- naravna števila bi lahko v Agdi definirali na sledeči način
 
 data Nat : Set where
@@ -31,3 +33,13 @@ data ℕ : Set where
 _+_ : ℕ → ℕ → ℕ
 O + n = n
 (S m) + n = S (m + n)
+
+_≤_ : ℕ → ℕ → 𝔹
+(S _) ≤ O = 𝕗
+O ≤ _ = 𝕥
+(S m) ≤ (S n) = m ≤ n
+
+_≤_ : ℕ → ℕ → 𝔹
+(S _) ≤ O = 𝕗
+O ≤ _ = 𝕥
+(S m) ≤ (S n) = m ≤ n
