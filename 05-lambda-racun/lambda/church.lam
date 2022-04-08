@@ -1,13 +1,19 @@
-LET zero =
-    FUN f -> FUN x -> x
-IN
-LET succ =
-    FUN n -> FUN f -> FUN x -> n f (f x)
-IN
-LET plus =
-    FUN m -> FUN n -> FUN f -> FUN x -> m f (n f x)
-IN
-LET times =
-    FUN m -> FUN n -> FUN f -> FUN x -> m (n f) x
-IN
-times (succ zero) (succ zero)
+LET zero = \f. \x. x IN
+LET succ = \n. \f. \x. f (n f x) IN
+LET plus = \m. \n. \f. \x. m f (n f x) IN
+LET times = \m. \n. \f. \x. m (n f) x IN
+LET pred = \n. \f. \x. n (\g. \h. h (g f)) (\u. x) (\u. u) IN
+LET normalize = \n. n succ zero IN
+LET one = succ zero IN
+LET two = succ one IN
+LET four = times two two IN
+LET six = plus two four IN
+LET answer = times six (succ six) IN
+LET true = \x. \y. x IN
+LET false = \x. \y. y IN
+LET const = \c. \x. c IN
+LET iszero = \n. n (const false) true IN
+LET ifthenelse = \b. \x. \y. b x y IN
+LET psiodfact = \f. \n. ifthenelse (iszero n) (one) (\g. \x. (times n (f (pred n))) g x) IN
+LET ycombinator = \psi. (\x. x x) (\x. \y. psi (x x) y) IN
+normalize ((ycombinator psiodfact) (pred (pred six)))
