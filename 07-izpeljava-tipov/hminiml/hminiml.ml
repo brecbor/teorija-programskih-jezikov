@@ -11,7 +11,7 @@ let main () =
     let filename = Sys.argv.(1) in
     let source = read_source filename in
     let e = Parser.parse source in
-    let ty, eqs = Typechecker.infer_exp [] e in
+    let ty, eqs = Typechecker.infer_cmp [] e in
     print_string "NESUBSTITUIRANI TIP:";
     print_endline (Syntax.string_of_ty ty);
     print_endline "ENAČBE:";
@@ -28,11 +28,10 @@ let main () =
           ("- " ^ Syntax.string_of_param p ^ " -> " ^ Syntax.string_of_ty ty))
       subst;
     print_string "SUBSTITUIRANI TIP:";
-    print_endline (Syntax.string_of_ty (Syntax.subst_ty subst ty))
-
-(* print_endline "MALI KORAKI:";
-   Interpreter.small_step e;
-   print_endline "VELIKI KORAKI:";
-   Interpreter.big_step e *)
+    print_endline (Syntax.string_of_ty (Syntax.subst_ty subst ty));
+    print_endline "MALI KORAKI:";
+    Interpreter.small_step Interpreter.empty_state e;
+    print_endline "VELIKI KORAKI:";
+    Interpreter.big_step Interpreter.empty_state e
 
 let _ = main ()
