@@ -1,0 +1,4 @@
+LET f = FUN g -> 
+  IF g {0, 1} THEN 0 ELSE 0
+IN
+f (TRUE :: [])

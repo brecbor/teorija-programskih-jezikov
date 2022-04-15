@@ -1,0 +1,9 @@
+LET map = FUN f ->
+  LET REC mapf xs =
+    MATCH xs WITH
+    | [] -> []
+    | x :: xs -> f x :: mapf xs
+  IN
+  mapf
+IN
+map (FUN x -> {x * x, x > 2}) (1 :: 2 :: 3 :: [])

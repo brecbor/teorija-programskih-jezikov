@@ -1,0 +1,8 @@
+LET REC unzip xys =
+  MATCH xys WITH
+  | [] -> {[], []}
+  | xy :: xys -> (
+      LET r = unzip xys IN
+      {FST xy :: FST r, SND xy :: SND r} )
+IN
+unzip ({1, TRUE} :: {2, FALSE} :: [])

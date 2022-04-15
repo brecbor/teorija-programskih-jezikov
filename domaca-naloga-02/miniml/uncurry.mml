@@ -1,0 +1,4 @@
+LET uncurry = FUN f -> FUN p -> 
+  (f (FST p)) (SND p)
+IN
+uncurry

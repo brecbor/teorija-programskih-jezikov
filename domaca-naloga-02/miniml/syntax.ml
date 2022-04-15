@@ -1,3 +1,43 @@
+type param = Param of int
+
+let counter = ref 0
+
+let fresh_param () =
+  incr counter;
+  Param !counter
+
+type ty =
+  | IntTy
+  | BoolTy
+  | ArrowTy of ty * ty
+  | ParamTy of param
+  | ProdTy of ty * ty
+  | ListTy of ty
+
+let rec occurs p = function
+  | IntTy | BoolTy -> false
+  | ArrowTy (ty1, ty2) -> occurs p ty1 || occurs p ty2
+  | ParamTy p' -> p = p'
+  | _ -> failwith "TODO"
+
+let rec subst_ty sbst = function
+  | (IntTy | BoolTy) as ty -> ty
+  | ArrowTy (ty1, ty2) -> ArrowTy (subst_ty sbst ty1, subst_ty sbst ty2)
+  | ParamTy p as ty -> List.assoc_opt p sbst |> Option.value ~default:ty
+  | _ -> failwith "TODO"
+
+let fresh_ty () = ParamTy (fresh_param ())
+
+let string_of_param (Param p) = "'a" ^ string_of_int p
+
+let rec string_of_ty = function
+  | IntTy -> "int"
+  | BoolTy -> "bool"
+  | ArrowTy (ty1, ty2) ->
+      "(" ^ string_of_ty ty1 ^ " -> " ^ string_of_ty ty2 ^ ")"
+  | ParamTy p -> string_of_param p
+  | _ -> failwith "TODO"
+
 type ident = Ident of string
 
 type exp =
@@ -78,31 +118,3 @@ and string_of_exp0 = function
   | e -> "(" ^ string_of_exp3 e ^ ")"
 
 let string_of_exp = string_of_exp3
-
-type param = Param of int
-
-type ty = ParamTy of param | IntTy | BoolTy | ArrowTy of ty * ty
-
-let rec subst_ty sbst = function
-  | ParamTy a as t -> (
-      match List.assoc_opt a sbst with None -> t | Some t' -> t')
-  | (IntTy | BoolTy) as t -> t
-  | ArrowTy (t1, t2) -> ArrowTy (subst_ty sbst t1, subst_ty sbst t2)
-
-let string_of_param (Param alpha) =
-  let max_alpha = int_of_char 'z' - int_of_char 'a' + 1 in
-  if alpha < max_alpha then
-    "'" ^ String.make 1 (char_of_int (int_of_char 'a' + alpha))
-  else "'ty" ^ string_of_int (alpha - max_alpha)
-
-let rec string_of_ty1 = function
-  | ArrowTy (t1, t2) -> string_of_ty0 t1 ^ " -> " ^ string_of_ty0 t2
-  | t -> string_of_ty0 t
-
-and string_of_ty0 = function
-  | ParamTy a -> string_of_param a
-  | IntTy -> "int"
-  | BoolTy -> "bool"
-  | t -> "(" ^ string_of_ty1 t ^ ")"
-
-let string_of_ty = string_of_ty1
